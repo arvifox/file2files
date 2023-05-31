@@ -15,15 +15,11 @@ dependencies {
 }
 
 test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = '17'
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = '17'
+kotlin {
+    jvmToolchain(11)
 }
 
 application {

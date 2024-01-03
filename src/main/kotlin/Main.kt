@@ -1,3 +1,9 @@
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -7,11 +13,28 @@ fun main(args: Array<String>) {
         "0" -> addTop(args[1], args[2])
         "1" -> countComm(args[1], args[2])
         "2" -> clearIdea(args[1])
+        "3" -> readWhite(args[1], args[2])
     }
 
     // Try adding program arguments via Run/Debug configuration.
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
     println("Done")
+}
+
+private fun readWhite(url: String, dir: String) {
+    runBlocking {
+        val client = NetClient()
+        val response = client.createJsonRequest<JsonArray>(url)
+        println("response count = ${response.size}")
+        val mapped = response.mapNotNull {
+            it as JsonObject
+            it["address"]?.jsonPrimitive?.content
+        }
+        println("response mapped count = ${mapped.size}")
+        val file = File(dir, "qweqwe.txt")
+        file.writeText(Json.encodeToString(mapped))
+        println("written file")
+    }
 }
 
 private fun clearIdea(dir: String) {
